@@ -1,16 +1,21 @@
 module.exports = function check(str, bracketsConfig) {
-	const arr = str.split('');
-	for (let _ = 0; _ < str.length; _++) {
-		for (let i = 0; i < bracketsConfig.length; i++) {
-			for (let j = 0; j < arr.length; j++) {
-				if (
-					arr[j] === bracketsConfig[i][0] &&
-					arr[j + 1] === bracketsConfig[i][1]
-				) {
-					arr.splice(j, 2);
-				}
-			}
+	const stack = [];
+	const newBrackets = JSON.parse(JSON.stringify(bracketsConfig)).map((el) =>
+		el.reverse()
+	);
+	const map = Object.fromEntries(newBrackets);
+
+	for (let i = 0; i < str.length; i++) {
+		const current = str[i];
+
+		if (
+			Object.keys(map).includes(current) &&
+			stack[stack.length - 1] === map[current]
+		) {
+			stack.pop();
+		} else {
+			stack.push(current);
 		}
 	}
-	return arr.length === 0;
+	return stack.length === 0;
 };
